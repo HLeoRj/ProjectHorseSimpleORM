@@ -19,7 +19,9 @@ uses
   FireDAC.Phys.Intf,
   FireDAC.DApt.Intf,
   FireDAC.Comp.DataSet,
-  FireDAC.Comp.Client;
+  FireDAC.Comp.Client,
+  ServerHorse.Config,
+  ServerHorse.Consts;
 
 type
 
@@ -34,6 +36,9 @@ type
     function DataSetAsJsonArray : TJsonArray;
     function DataSetAsJsonObject : TJsonObject;
     function DataSetToStream : String;
+    function Settings(Value: TshCaseDefinition = shLower): iDAOGeneric<T>;
+    function InsertConfig(const aJsonObject: TJsonObject): TJsonObject;
+    function UpdateConfig(const aJsonObject: TJsonObject): TJsonObject;
   end;
 
   TDAOGeneric<T : class, constructor> = class(TInterfacedObject, iDAOGeneric<T>)
@@ -42,6 +47,7 @@ type
     FConn : iSimpleQuery;
     FDAO : iSimpleDAO<T>;
     FDataSource : TDataSource;
+    Fconfig: iServerHorseConfig<T>;
   public
     constructor Create;
     destructor Destroy; override;
@@ -55,6 +61,9 @@ type
     function DataSetAsJsonArray : TJsonArray;
     function DataSetAsJsonObject : TJsonObject;
     function DataSetToStream : String;
+    function Settings(Value: TshCaseDefinition = shLower): iDAOGeneric<T>;
+    function InsertConfig(const aJsonObject: TJsonObject): TJsonObject;
+    function UpdateConfig(const aJsonObject: TJsonObject): TJsonObject;
   end;
 
 implementation
@@ -168,6 +177,50 @@ begin
     TGBJSONConfig.GetInstance.CaseDefinition(TCaseDefinition.cdLower);
     TGBJSONDefault.Serializer<T>(False).JsonObjectToObject(aObj, aJsonObject);
     aObj.fromJSONObject(aJsonObject);
+    FDAO.Update(aObj);
+    Result := FDataSource.DataSet.ToJSONObject;
+  finally
+    aObj.Free;
+  end;
+end;
+
+function TDAOGeneric<T>.Settings(Value: TshCaseDefinition = shLower)
+  : iDAOGeneric<T>;
+begin
+  Result := Self;
+  Fconfig := TServerHorseConfig<T>.New.CaseDefinition(Value);
+  TDataSetSerializeConfig.GetInstance.CaseNameDefinition :=
+    Fconfig.DataSetSerializeCaseDefinition;
+end;
+
+function TDAOGeneric<T>.InsertConfig(const aJsonObject: TJsonObject)
+  : TJsonObject;
+var
+  aObj: T;
+begin
+  aObj := T.Create;
+  try
+    if Not Assigned(Fconfig) then
+      Settings;
+
+    Fconfig.JsonObjectToObject(aObj, aJsonObject);
+    FDAO.Insert(aObj);
+    Result := FDataSource.DataSet.ToJSONObject;
+  finally
+    aObj.Free;
+  end;
+end;
+
+function TDAOGeneric<T>.UpdateConfig(const aJsonObject: TJsonObject)
+  : TJsonObject;
+var
+  aObj: T;
+begin
+  aObj := T.Create;
+  try
+    if Not Assigned(Fconfig) then
+      Settings;
+    Fconfig.JsonObjectToObject(aObj, aJsonObject);
     FDAO.Update(aObj);
     Result := FDataSource.DataSet.ToJSONObject;
   finally
