@@ -17,10 +17,16 @@ uses
   ServerHorse.Routers.Users in 'src\Routers\ServerHorse.Routers.Users.pas',
   ServerHorse.Model.Entity.CUSTOMERS in 'src\Model\Entity\ServerHorse.Model.Entity.CUSTOMERS.pas',
   ServerHorse.Routers.Customers in 'src\Routers\ServerHorse.Routers.Customers.pas',
-  ServerHorse.Utils in 'src\Utils\ServerHorse.Utils.pas';
+  ServerHorse.Utils in 'src\Utils\ServerHorse.Utils.pas',
+  ServerHorse.Config in 'src\Model\DAO\ServerHorse.Config.pas',
+  ServerHorse.Consts in 'src\Model\DAO\ServerHorse.Consts.pas',
+  ServerHorse.Routers.Settings.Customers in 'src\Routers\ServerHorse.Routers.Settings.Customers.pas',
+  ServerHorse.Routers.Settings.Users in 'src\Routers\ServerHorse.Routers.Settings.Users.pas';
 
 begin
   ServerHorse.Routers.Users.Registry;
   ServerHorse.Routers.Customers.Registry;
+  ServerHorse.Routers.Settings.Users.Registry;
+  ServerHorse.Routers.Settings.Customers.Registry;
   THorse.Listen(9000);
 end.
