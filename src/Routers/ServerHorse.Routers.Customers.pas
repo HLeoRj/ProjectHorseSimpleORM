@@ -19,7 +19,7 @@ uses
   ServerHorse.Model.Entity.CUSTOMERS,
   System.SysUtils,
   ServerHorse.Utils,
-  Horse.Paginate;
+  Horse.Paginate, ServerHorse.Consts;
 
 
 procedure Registry;
@@ -36,12 +36,13 @@ begin
     begin
       iController := TController.New.CUSTOMERS;
       iController.This
-        .DAO
-          .SQL
-            .Where(TServerUtils.New.LikeFind(Req))
-            .OrderBy(TServerUtils.New.OrderByFind(Req))
-          .&End
-        .Find;
+        .Settings(shLowerCamelCase)
+          .DAO
+            .SQL
+              .Where(TServerUtils.New.LikeFind(Req))
+              .OrderBy(TServerUtils.New.OrderByFind(Req))
+            .&End
+          .Find;
 
       Res.Send<TJsonArray>(iController.This.DataSetAsJsonArray);
     end)
@@ -53,6 +54,7 @@ begin
     begin
       iController := TController.New.CUSTOMERS;
       iController.This
+        .Settings(shLower)
         .DAO
           .SQL
             .Where('GUUID = ' + QuotedStr('{' + Req.Params['ID'] + '}' ))
@@ -72,7 +74,11 @@ begin
       try
         if not vBody.TryGetValue<String>('guuid', aGuuid) then
           vBody.AddPair('guuid', TGUID.NewGuid.ToString());
-        TController.New.CUSTOMERS.This.Insert(vBody);
+        TController.New.CUSTOMERS
+            .This
+            .SettingsGBJSON(shLower)
+            .Insert(vBody);
+
         Res.Status(200).Send<TJsonObject>(vBody);
       except
         Res.Status(500).Send('');
@@ -89,7 +95,11 @@ begin
       try
         if not vBody.TryGetValue<String>('guuid', aGuuid) then
           vBody.AddPair('guuid', '{' + Req.Params['ID'] + '}' );
-        TController.New.CUSTOMERS.This.Update(vBody);
+        TController.New.CUSTOMERS
+          .This
+            .SettingsGBJSON(shUpper)
+            .Update(vBody);
+
         Res.Status(200).Send<TJsonObject>(vBody);
       except
         Res.Status(500).Send('');

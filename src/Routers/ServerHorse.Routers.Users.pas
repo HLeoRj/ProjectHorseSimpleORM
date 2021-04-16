@@ -19,7 +19,8 @@ uses
   ServerHorse.Model.Entity.USERS,
   System.SysUtils,
   ServerHorse.Utils,
-  Horse.Paginate;
+  Horse.Paginate,
+  ServerHorse.Consts;
 
 
 procedure Registry;
@@ -36,12 +37,13 @@ begin
     begin
       iController := TController.New.USERS;
       iController.This
-        .DAO
-          .SQL
-            .Where(TServerUtils.New.LikeFind(Req))
-            .OrderBy(TServerUtils.New.OrderByFind(Req))
-          .&End
-        .Find;
+        .Settings(shLowerCamelCase)
+          .DAO
+            .SQL
+              .Where(TServerUtils.New.LikeFind(Req))
+              .OrderBy(TServerUtils.New.OrderByFind(Req))
+            .&End
+          .Find;
 
       Res.Send<TJsonArray>(iController.This.DataSetAsJsonArray);
     end)
@@ -53,11 +55,12 @@ begin
     begin
       iController := TController.New.USERS;
       iController.This
-        .DAO
-          .SQL
-            .Where('GUUID = ' + QuotedStr('{' + Req.Params['ID'] + '}' ))
-          .&End
-        .Find;
+        .Settings(shLower)
+          .DAO
+            .SQL
+              .Where('GUUID = ' + QuotedStr('{' + Req.Params['ID'] + '}' ))
+            .&End
+          .Find;
 
       Res.Send<TJsonArray>(iController.This.DataSetAsJsonArray);
     end)
@@ -72,7 +75,11 @@ begin
       try
         if not vBody.TryGetValue<String>('guuid', aGuuid) then
           vBody.AddPair('guuid', TGUID.NewGuid.ToString());
-        TController.New.USERS.This.Insert(vBody);
+
+        TController.New.USERS.This
+          .SettingsGBJSON(shLower)
+          .Insert(vBody);
+
         Res.Status(200).Send<TJsonObject>(vBody);
       except
         Res.Status(500).Send('');
@@ -89,7 +96,10 @@ begin
       try
         if not vBody.TryGetValue<String>('guuid', aGuuid) then
           vBody.AddPair('guuid', '{' + Req.Params['ID'] + '}' );
-        TController.New.USERS.This.Update(vBody);
+
+        TController.New.USERS.This
+          .SettingsGBJSON(shLower)
+          .Update(vBody);
         Res.Status(200).Send<TJsonObject>(vBody);
       except
         Res.Status(500).Send('');
@@ -98,9 +108,6 @@ begin
 
   .Delete('/users/:id',
   procedure(Req: THorseRequest; Res: THorseResponse; Next: TProc)
-
-  var
-    aTeste: string;
   begin
       try
         TController.New.USERS.This.Delete('guuid', QuotedStr('{' + Req.Params['id'] + '}'));
