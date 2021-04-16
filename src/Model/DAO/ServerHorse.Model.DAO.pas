@@ -3,12 +3,10 @@ unit ServerHorse.Model.DAO;
 interface
 
 uses
+  System.SysUtils,
+  System.Classes,
   System.JSON,
-  REST.Json,
-  SimpleInterface,
-  SimpleDAO,
-  SimpleAttributes,
-  SimpleQueryFiredac,
+  REST.JSON,
   Data.DB,
   DataSet.Serialize,
   FireDAC.Stan.Intf,
@@ -20,50 +18,58 @@ uses
   FireDAC.DApt.Intf,
   FireDAC.Comp.DataSet,
   FireDAC.Comp.Client,
-  ServerHorse.Config,
-  ServerHorse.Consts;
+  SimpleInterface,
+  SimpleDAO,
+  SimpleAttributes,
+  SimpleQueryFiredac,
+
+  ServerHorse.Consts,
+  ServerHorse.Settings;
 
 type
 
-  iDAOGeneric<T : class> = interface
+  iDAOGeneric<T: class> = interface
     ['{1DAE62A0-0C6E-4FA6-BF9E-2377A25F267C}']
-    function Find : TJsonArray; overload;
-    function Find (const aID : String ) : TJsonObject; overload;
-    function Insert (const aJsonObject : TJsonObject) : TJsonObject;
-    function Update (const aJsonObject : TJsonObject) : TJsonObject;
-    function Delete (aField : String; aValue : String) : TJsonObject;
-    function DAO : ISimpleDAO<T>;
-    function DataSetAsJsonArray : TJsonArray;
-    function DataSetAsJsonObject : TJsonObject;
-    function DataSetToStream : String;
+    function Find: TJsonArray; overload;
+    function Find(const aID: String): TJsonObject; overload;
+    function Insert(const aJsonObject: TJsonObject): TJsonObject;
+    function Update(const aJsonObject: TJsonObject): TJsonObject;
+    function Delete(aField: String; aValue: String): TJsonObject;
+    function DAO: ISimpleDAO<T>;
+    function DataSetAsJsonArray: TJsonArray;
+    function DataSetAsJsonObject: TJsonObject;
+    function DataSetToStream: String;
+
     function Settings(Value: TshCaseDefinition = shLower): iDAOGeneric<T>;
-    function InsertConfig(const aJsonObject: TJsonObject): TJsonObject;
-    function UpdateConfig(const aJsonObject: TJsonObject): TJsonObject;
+    function SettingsGBJSON(Value: TshCaseDefinition): iDAOGeneric<T>;
+    function SettingsDataSetSerialize(Value: TshCaseDefinition): iDAOGeneric<T>;
+
   end;
 
-  TDAOGeneric<T : class, constructor> = class(TInterfacedObject, iDAOGeneric<T>)
+  TDAOGeneric<T: class, constructor> = class(TInterfacedObject, iDAOGeneric<T>)
   private
-    FIndexConn : Integer;
-    FConn : iSimpleQuery;
-    FDAO : iSimpleDAO<T>;
-    FDataSource : TDataSource;
-    Fconfig: iServerHorseConfig<T>;
+    FIndexConn: Integer;
+    FConn: iSimpleQuery;
+    FDAO: ISimpleDAO<T>;
+    FDataSource: TDataSource;
+    FSettings: iServerHorseSettings<T>;
   public
     constructor Create;
     destructor Destroy; override;
-    class function New : iDAOGeneric<T>;
-    function Find : TJsonArray; overload;
-    function Find (const aID : String ) : TJsonObject; overload;
-    function Insert (const aJsonObject : TJsonObject) : TJsonObject;
-    function Update (const aJsonObject : TJsonObject) : TJsonObject;
-    function Delete (aField : String; aValue : String) : TJsonObject;
-    function DAO : ISimpleDAO<T>;
-    function DataSetAsJsonArray : TJsonArray;
-    function DataSetAsJsonObject : TJsonObject;
-    function DataSetToStream : String;
+    class function New: iDAOGeneric<T>;
+    function Find: TJsonArray; overload;
+    function Find(const aID: String): TJsonObject; overload;
+    function Insert(const aJsonObject: TJsonObject): TJsonObject;
+    function Update(const aJsonObject: TJsonObject): TJsonObject;
+    function Delete(aField: String; aValue: String): TJsonObject;
+    function DAO: ISimpleDAO<T>;
+    function DataSetAsJsonArray: TJsonArray;
+    function DataSetAsJsonObject: TJsonObject;
+    function DataSetToStream: String;
+
     function Settings(Value: TshCaseDefinition = shLower): iDAOGeneric<T>;
-    function InsertConfig(const aJsonObject: TJsonObject): TJsonObject;
-    function UpdateConfig(const aJsonObject: TJsonObject): TJsonObject;
+    function SettingsGBJSON(Value: TshCaseDefinition): iDAOGeneric<T>;
+    function SettingsDataSetSerialize(Value: TshCaseDefinition): iDAOGeneric<T>;
   end;
 
 implementation
@@ -71,18 +77,16 @@ implementation
 { TDAOGeneric<T> }
 
 uses
-  System.SysUtils,
-  ServerHorse.Model.Connection,
-  System.Classes,
-  GBJSON.Helper,
-  GBJSON.Interfaces;
+  ServerHorse.Model.Connection;
 
 constructor TDAOGeneric<T>.Create;
 begin
   FDataSource := TDataSource.Create(nil);
   FIndexConn := ServerHorse.Model.Connection.Connected;
-  FConn := TSimpleQueryFiredac.New(ServerHorse.Model.Connection.FConnList.Items[FIndexConn]);
+  FConn := TSimpleQueryFiredac.New(ServerHorse.Model.Connection.FConnList.Items
+    [FIndexConn]);
   FDAO := TSimpleDAO<T>.New(FConn).DataSource(FDataSource);
+  FSettings := TServerHorseSettings<T>.New;
 end;
 
 function TDAOGeneric<T>.DAO: ISimpleDAO<T>;
@@ -102,8 +106,8 @@ end;
 
 function TDAOGeneric<T>.DataSetToStream: String;
 var
-  lStream : TStringStream;
-  FDMemTable : TFDMemTable;
+  lStream: TStringStream;
+  FDMemTable: TFDMemTable;
 begin
   lStream := TStringStream.Create;
   FDMemTable := TFDMemTable.Create(nil);
@@ -116,7 +120,6 @@ begin
     lStream.Free;
     FDMemTable.Free;
   end;
-
 end;
 
 function TDAOGeneric<T>.Delete(aField, aValue: String): TJsonObject;
@@ -152,15 +155,37 @@ begin
   Result := Self.Create;
 end;
 
+function TDAOGeneric<T>.Settings(Value: TshCaseDefinition = shLower)
+  : iDAOGeneric<T>;
+begin
+  Result := Self;
+  FSettings := TServerHorseSettings<T>.New.CaseDefinition(Value);
+  SettingsDataSetSerialize(Value);
+  SettingsGBJSON(Value);
+end;
+
+function TDAOGeneric<T>.SettingsDataSetSerialize(Value: TshCaseDefinition)
+  : iDAOGeneric<T>;
+begin
+  Result := Self;
+  TDataSetSerializeConfig.GetInstance.CaseNameDefinition :=
+    FSettings.ShorseToDSSerializeCaseDefinition(Value).DSerializeCaseDefinition;
+end;
+
+function TDAOGeneric<T>.SettingsGBJSON(Value: TshCaseDefinition)
+  : iDAOGeneric<T>;
+begin
+  Result := Self;
+  FSettings.ShorseToGBJSONCaseDefinition(Value);
+end;
+
 function TDAOGeneric<T>.Insert(const aJsonObject: TJsonObject): TJsonObject;
 var
-  aObj : T;
+  aObj: T;
 begin
   aObj := T.Create;
   try
-    TGBJSONConfig.GetInstance.CaseDefinition(TCaseDefinition.cdLower);
-    TGBJSONDefault.Serializer<T>(False).JsonObjectToObject(aObj, aJsonObject);
-    aObj.fromJSONObject(aJsonObject);
+    FSettings.JsonObjectToObject(aObj, aJsonObject);
     FDAO.Insert(aObj);
     Result := FDataSource.DataSet.ToJSONObject;
   finally
@@ -170,57 +195,11 @@ end;
 
 function TDAOGeneric<T>.Update(const aJsonObject: TJsonObject): TJsonObject;
 var
-  aObj : T;
-begin
-  aObj := T.Create;
-  try
-    TGBJSONConfig.GetInstance.CaseDefinition(TCaseDefinition.cdLower);
-    TGBJSONDefault.Serializer<T>(False).JsonObjectToObject(aObj, aJsonObject);
-    aObj.fromJSONObject(aJsonObject);
-    FDAO.Update(aObj);
-    Result := FDataSource.DataSet.ToJSONObject;
-  finally
-    aObj.Free;
-  end;
-end;
-
-function TDAOGeneric<T>.Settings(Value: TshCaseDefinition = shLower)
-  : iDAOGeneric<T>;
-begin
-  Result := Self;
-  Fconfig := TServerHorseConfig<T>.New.CaseDefinition(Value);
-  TDataSetSerializeConfig.GetInstance.CaseNameDefinition :=
-    Fconfig.DataSetSerializeCaseDefinition;
-end;
-
-function TDAOGeneric<T>.InsertConfig(const aJsonObject: TJsonObject)
-  : TJsonObject;
-var
   aObj: T;
 begin
   aObj := T.Create;
   try
-    if Not Assigned(Fconfig) then
-      Settings;
-
-    Fconfig.JsonObjectToObject(aObj, aJsonObject);
-    FDAO.Insert(aObj);
-    Result := FDataSource.DataSet.ToJSONObject;
-  finally
-    aObj.Free;
-  end;
-end;
-
-function TDAOGeneric<T>.UpdateConfig(const aJsonObject: TJsonObject)
-  : TJsonObject;
-var
-  aObj: T;
-begin
-  aObj := T.Create;
-  try
-    if Not Assigned(Fconfig) then
-      Settings;
-    Fconfig.JsonObjectToObject(aObj, aJsonObject);
+    FSettings.JsonObjectToObject(aObj, aJsonObject);
     FDAO.Update(aObj);
     Result := FDataSource.DataSet.ToJSONObject;
   finally
