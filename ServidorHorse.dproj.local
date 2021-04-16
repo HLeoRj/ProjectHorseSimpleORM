@@ -3,18 +3,22 @@
 	<Transactions>
     <Transaction>2020/12/18 15:20:14.000.897,C:\Users\thuli\Documents\Embarcadero\Studio\Projects\Project2.dproj=D:\Projetos\Cursos\ProgramacaoReativa Delphi\ServidorHorse\ServidorHorse.dproj</Transaction>
     <Transaction>2020/12/18 16:05:47.000.655,D:\Projetos\Cursos\ProgramacaoReativa Delphi\ServidorHorse\src\Sockets\ServidorHorse.Sockets.Bird.pas=D:\Projetos\Cursos\ProgramacaoReativa Delphi\ServidorHorse\Unit1.pas</Transaction>
-    <Transaction>2021/04/11 14:46:40.009,=C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\src\Model\Entity\ServerHorse.Model.Entity.CUSTOMERS.Configurado.pas</Transaction>
-    <Transaction>2021/04/11 14:47:02.803,C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\src\Model\Entity\ServerHorse.Model.Entity.CUSTOMERS.Configurado.pas=</Transaction>
-    <Transaction>2021/04/11 14:47:47.708,=C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\Unit1.pas</Transaction>
-    <Transaction>2021/04/11 14:48:34.205,C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\src\Routers\ServerHorse.Routers.Customers.Settings.pas=C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\Unit1.pas</Transaction>
-    <Transaction>2021/04/11 14:49:14.349,=C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\src\Model\DAO\ServerHorse.Config.pas</Transaction>
-    <Transaction>2021/04/11 14:49:14.365,=C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\src\Model\DAO\ServerHorse.Consts.pas</Transaction>
-    <Transaction>2021/04/11 14:51:38.385,=C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\Unit1.pas</Transaction>
-    <Transaction>2021/04/11 14:52:44.973,C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\src\Routers\ServerHorse.Routers.Settings.Users.pas=C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\Unit1.pas</Transaction>
-    <Transaction>2021/04/11 14:53:18.031,C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\src\Routers\ServerHorse.Routers.Settings.Customers.pas=C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\src\Routers\ServerHorse.Routers.Customers.Settings.pas</Transaction>
-    <Transaction>2021/04/11 14:54:08.469,C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\src\Routers\ServerHorse.Routers.Settings.Customers.pas=</Transaction>
-    <Transaction>2021/04/11 14:54:08.506,C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\src\Routers\ServerHorse.Routers.Settings.Users.pas=</Transaction>
-    <Transaction>2021/04/11 14:54:29.004,=C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\src\Routers\ServerHorse.Routers.Settings.Customers.pas</Transaction>
-    <Transaction>2021/04/11 14:54:29.036,=C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\src\Routers\ServerHorse.Routers.Settings.Users.pas</Transaction>
+    <Transaction>2021/04/11 14:46:40.000.009,=C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\src\Model\Entity\ServerHorse.Model.Entity.CUSTOMERS.Configurado.pas</Transaction>
+    <Transaction>2021/04/11 14:47:02.000.803,C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\src\Model\Entity\ServerHorse.Model.Entity.CUSTOMERS.Configurado.pas=</Transaction>
+    <Transaction>2021/04/11 14:47:47.000.708,=C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\Unit1.pas</Transaction>
+    <Transaction>2021/04/11 14:48:34.000.205,C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\src\Routers\ServerHorse.Routers.Customers.Settings.pas=C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\Unit1.pas</Transaction>
+    <Transaction>2021/04/11 14:49:14.000.365,=C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\src\Model\DAO\ServerHorse.Consts.pas</Transaction>
+    <Transaction>2021/04/11 14:49:14.000.349,=C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\src\Model\DAO\ServerHorse.Config.pas</Transaction>
+    <Transaction>2021/04/11 14:51:38.000.385,=C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\Unit1.pas</Transaction>
+    <Transaction>2021/04/11 14:52:44.000.973,C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\src\Routers\ServerHorse.Routers.Settings.Users.pas=C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\Unit1.pas</Transaction>
+    <Transaction>2021/04/11 14:53:18.000.031,C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\src\Routers\ServerHorse.Routers.Settings.Customers.pas=C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\src\Routers\ServerHorse.Routers.Customers.Settings.pas</Transaction>
+    <Transaction>2021/04/11 14:54:08.000.506,C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\src\Routers\ServerHorse.Routers.Settings.Users.pas=</Transaction>
+    <Transaction>2021/04/11 14:54:08.000.469,C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\src\Routers\ServerHorse.Routers.Settings.Customers.pas=</Transaction>
+    <Transaction>2021/04/11 14:54:29.000.036,=C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\src\Routers\ServerHorse.Routers.Settings.Users.pas</Transaction>
+    <Transaction>2021/04/11 14:54:29.000.004,=C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\src\Routers\ServerHorse.Routers.Settings.Customers.pas</Transaction>
+    <Transaction>2021/04/16 10:56:04.216,=C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\src\Model\DAO\ServerHorse.Settings.pas</Transaction>
+    <Transaction>2021/04/16 10:57:58.392,C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\src\Routers\ServerHorse.Routers.Settings.Customers.pas=</Transaction>
+    <Transaction>2021/04/16 10:58:08.784,C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\src\Routers\ServerHorse.Routers.Settings.Users.pas=</Transaction>
+    <Transaction>2021/04/16 10:58:38.083,C:\Delphi Files\Componentes - DXE10_Tokio\HLeoSimple\src\Model\DAO\ServerHorse.Config.pas=</Transaction>
   </Transactions>
 </BorlandProject>
