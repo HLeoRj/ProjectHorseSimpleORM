@@ -5,8 +5,7 @@ interface
 
 type
 
-  TshCaseDefinition = (shNone, shLower, shUpper, shLowerCamelCase,
-    shUpperCamelCase, shCamelCase);
+  TshCaseDefinition = (shNone, shLower, shUpper, shLowerCamelCase,shUpperCamelCase);
 
 implementation
 
